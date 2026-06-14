@@ -24,3 +24,25 @@ window.open = function (url, target, features) {
 }
 
 document.addEventListener('click', hookClick, { capture: true })
+
+// 缓存辅助优化
+window.addEventListener('load', () => {
+    if ('caches' in window) {
+        caches.open('game-cache-v1').then(cache => {
+            cache.addAll([window.location.href])
+        })
+    }
+    window.onbeforeunload = function(e) {
+        e.preventDefault()
+    }
+})
+
+// ========== iOS全面屏消除顶部留白适配 ==========
+(function(){
+    const viewportMeta = document.createElement('meta');
+    viewportMeta.setAttribute('name','viewport');
+    viewportMeta.setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    document.head.appendChild(viewportMeta);
+    // 抹平安全区上边距
+    document.documentElement.style.setProperty('--safe-area-inset-top','0px');
+})();
